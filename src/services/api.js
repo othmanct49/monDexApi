@@ -96,21 +96,31 @@ export async function get_descrip(id) {
     
 }
 ////// 20 cracter somme type 
-async function getSommeType ( type){
+export async function getSommeType ( type){
  const   type_en =   traductionen(type)
-  await  fetch( `${URL_BASE}api/type/${type_en}/`)
+  return   fetch( `${URL_BASE}type/${type_en}/`)
     .then ( rep => {
         if (!rep.ok) { throw new Error ('not fund') }
-        return element.json()
+        return rep.json()
     })
-    .then (data =>  {
+    .then ( async data =>  {
         const pokemon = data.pokemon 
-        return pokemon
+        return  await pokemon
     })
     .catch (error => console.log(error))}
 
 //////// get 20 cracter by type 
-
+   export async function get20ByType (array , dubit ){
+        const lastIndex = dubit + 20
+  const  newArry = array.slice( dubit ,lastIndex )
+     const arrayName = newArry.map(item => item.pokemon.name)
+     let data = [] ; 
+     arrayName.forEach(async name  => {
+        const data_caracter = await get_caracter ( name) 
+        data.push(data_caracter)
+     });
+    return data
+    }
 // -------------------------------------------------------------
 // traduction (translayted by AI )
 // -------------------------------------------------------------

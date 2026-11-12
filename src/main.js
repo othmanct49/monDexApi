@@ -1,5 +1,6 @@
 import { creatures } from './storage.js'
 import { Affichez , Affichez_details , affichez_filter } from './ui.js';
+import { getSommeType , get20ByType} from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
 
@@ -110,8 +111,8 @@ let input = search.addEventListener('input', (event) => {
 // « Tous » réinitialise le filtre.
 // La recherche et le filtre fonctionnent ENSEMBLE.
 const type = document.querySelector('#filters')
-const click_type = type.addEventListener('click', (event) => {
-  const select_type = event.target.innerHTML.toLowerCase()
+const click_type = type.addEventListener('click', async (event) =>  {
+  const select_type = event.target.innerHTML
   const clickd_button = event.target.closest('button')
   const remove_style_button = type.querySelectorAll('button')
   if (!clickd_button) {
@@ -121,10 +122,15 @@ const click_type = type.addEventListener('click', (event) => {
 
     
   grid.innerHTML = "";
-  if (select_type != 'tous') {
-    let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
-    index_cart_by_type.forEach(cart => {
-     affichez_filter (cart )
+  if (select_type != 'Tous') {
+    // let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
+    let caracterSommeType =  await  getSommeType (select_type)
+    console.log( caracterSommeType )
+    let depart = 0; 
+    let caracter20Filter = await get20ByType (caracterSommeType , depart)
+     console.log (caracter20Filter)
+    caracter20Filter.forEach(cart => {
+     affichez_filter (cart , grid )
     })
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))

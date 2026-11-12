@@ -1,6 +1,6 @@
 
 ///// affichez dans grid :
-export function Affichez(creatures , dom ) {
+export function Affichez(creatures, dom) {
   creatures.forEach(cart => {
 
 
@@ -16,16 +16,16 @@ export function Affichez(creatures , dom ) {
             <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
             <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
           </div>
-          <p class="text-sm text-muted">${cart.level} ·${Number(cart.stats.hp) + Number(cart.stats.attack) +Number( cart.stats.defence)} </p>
+          <p class="text-sm text-muted">${cart.level} ·${Number(cart.stats.hp) + Number(cart.stats.attack) + Number(cart.stats.defence)} </p>
           <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
         </article> ` )
 
   });
 }
 // Affichez details 
-export function Affichez_details ( details , index_card_select , creatures , ajout_list){
+export function Affichez_details(details, index_card_select, creatures, ajout_list) {
 
-    details.innerHTML = `<div class="flex items-center justify-between">
+  details.innerHTML = `<div class="flex items-center justify-between">
             <span class="font-mono text-sm text-muted">${creatures[index_card_select].id} · Détail</span>
             <button  type="button" aria-label="Fermer le détail" class="close_bot btn-outline w-11 px-0">✕</button>
           </div>
@@ -48,10 +48,13 @@ export function Affichez_details ( details , index_card_select , creatures , ajo
             <div class="grid grid-cols-[80px_1fr_40px] items-center gap-2"><span class="font-bold">Attaque</span><span class="h-3 rounded-full bg-ground"><span class="block h-3  rounded-full bg-brand" style="width:${creatures[index_card_select].stats.attack}% " ></span></span><span class="text-right font-mono">${creatures[index_card_select].stats.attack} </span></div>
             <div class="grid grid-cols-[80px_1fr_40px] items-center gap-2"><span class="font-bold">Défense</span><span class="h-3 rounded-full bg-ground"><span class="block h-3  rounded-full bg-brand"style="width:${creatures[index_card_select].stats.defence}% " ></span></span><span class="text-right font-mono">${creatures[index_card_select].stats.defence}</span></div>
           </div>
-          <button id="ajouter" data-id="${creatures[index_card_select].id}" ${ajout_list.some(element => element.id == creatures[index_card_select].id) ? 'disabled' : ''} type="button" class="btn-primary">Ajouter à l'équipe</button>`}
- ////// affechez felter 
-      export function affichez_filter (cart ){
-      grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
+          <button id="ajouter" data-id="${creatures[index_card_select].id}" ${ajout_list.some(element => element.id == creatures[index_card_select].id) ? 'disabled' : ''} type="button" class="btn-primary">Ajouter à l'équipe</button>`
+}
+////// affechez felter 
+export function affichez_filter(cart , grid ) {
+ 
+
+  grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
           
           <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
           <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
@@ -64,4 +67,5 @@ export function Affichez_details ( details , index_card_select , creatures , ajo
           </div>
           <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
           <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
-        </article> ` )}
+        </article> ` )
+}
