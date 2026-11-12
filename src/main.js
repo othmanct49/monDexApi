@@ -1,18 +1,11 @@
-// =============================================================
-// script.js — Mon Dex
-// =============================================================
-// Les données viennent de data.js (la constante `creatures`).
-// Écrivez votre code ici, fonctionnalité par fonctionnalité.
-// Une carte GitHub Projects et au moins un commit par fonctionnalité.
-
-
+import { creatures } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter } from './ui.js';
 // -------------------------------------------------------------
 // 1. AFFICHAGE
-// Supprimez les cartes écrites à la main dans index.html et
-// construisez la grille à partir du tableau `creatures`.
+
  
-import { creatures } from './storage.js'
-import { Affichez , Affichez_details } from './ui.js';
+
+
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
 
@@ -37,8 +30,7 @@ Affichez(creatures , grid);
 
 // -------------------------------------------------------------
 // 2. DÉTAIL
-// const cart= document.querySelectorAll('.select');
-// cart.addEventlistener("click"; get_cart ) ;
+
 
 grid.addEventListener('click', (event) => {
   let clicked = event.target.closest('.select_card')
@@ -80,7 +72,9 @@ let search = document.getElementById('search');
 
 let input = search.addEventListener('input', (event) => {
   let input_search = event.target.value.toLowerCase();
+
   grid.innerHTML = " "
+  
   let card_recherche = creatures.filter(arg => arg.name.toLowerCase().includes(input_search))
 
   card_recherche.forEach(cart => {
@@ -141,7 +135,7 @@ const click_type = type.addEventListener('click', (event) => {
 
 
   } else {
-    Affichez()
+    Affichez(creatures , grid)
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
   }

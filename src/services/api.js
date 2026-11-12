@@ -48,7 +48,7 @@
       .then( async data => {
         const slot1  = data.types.find(item => item.slot ===1) 
        
-       const   type = slot1.type.name  
+       const   type = traduction (slot1.type.name ) 
 
         
 
@@ -95,9 +95,69 @@ export async function get_descrip(id) {
         return description
     
 }
+////// 20 cracter somme type 
+async function getSommeType ( type){
+ const   type_en =   traductionen(type)
+  await  fetch( `${URL_BASE}api/type/${type_en}/`)
+    .then ( rep => {
+        if (!rep.ok) { throw new Error ('not fund') }
+        return element.json()
+    })
+    .then (data =>  {
+        const pokemon = data.pokemon 
+        return pokemon
+    })
+    .catch (error => console.log(error))}
+
+//////// get 20 cracter by type 
+
 // -------------------------------------------------------------
-// traduction
+// traduction (translayted by AI )
 // -------------------------------------------------------------
    function traduction (type_en){
-    
+const typesFr = {     // translate by AI
+  normal: "Normal",
+  fighting: "Combat",
+  flying: "Vol",
+  poison: "Poison",
+  ground: "Sol",
+  rock: "Roche",
+  bug: "Insecte",
+  ghost: "Spectre",
+  steel: "Acier",
+  fire: "Feu",
+  water: "Eau",
+  grass: "Plante",
+  electric: "Électrik",
+  psychic: "Psy",
+  ice: "Glace",
+  dragon: "Dragon",
+  dark: "Ténèbres",
+  fairy: "Fée"
+}
+return typesFr[type_en]
    }
+      function traductionen (type_fr){
+        const typesEn = {
+  "Normal": "normal",  // translate by AI 
+  "Combat": "fighting",
+  "Vol": "flying",
+  "Poison": "poison",
+  "Sol": "ground",
+  "Roche": "rock",
+  "Insecte": "bug",
+  "Spectre": "ghost",
+  "Acier": "steel",
+  "Feu": "fire",
+  "Eau": "water",
+  "Plante": "grass",
+  "Électrik": "electric",
+  "Psy": "psychic",
+  "Glace": "ice",
+  "Dragon": "dragon",
+  "Ténèbres": "dark",
+  "Fée": "fairy"
+}
+
+return typesEn[type_fr] }
+
