@@ -1,1 +1,1 @@
- const URL_BASE = "https://pokeapi.co/api/v2/"
+console.log(   get_caracter("Pidgeotto"))
