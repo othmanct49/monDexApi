@@ -1,7 +1,7 @@
  const URL_BASE = "https://pokeapi.co/api/v2/"
 
   export async function get_20_caracter ( depart ){
-     return  await fetch (`${URL_BASE}pokemon?limit=20&offset=${depart}`)
+     return  await fetch (`${URL_BASE}pokemon?limit=200&offset=${depart}`)
      .then (rep => {
         if (!rep.ok){
             throw new Error ('not fond')
@@ -19,7 +19,49 @@
 
 
 
+export async function get_caracterById (id) {
 
+ return   fetch(`${URL_BASE}pokemon/${id}/`) 
+      .then(rep =>  {
+        if (!rep.ok){
+            throw new Error ('not fond ')
+            
+   
+        }
+        return rep.json() 
+      })
+      
+      .then( async data => {
+        const slot1  = data.types.find(item => item.slot ===1) 
+       
+       const   type = traduction (slot1.type.name ) 
+
+        
+
+        
+       const desc =  await get_descrip(data.id)
+        
+         const data_objet = {
+        id : data.id , 
+        name : data.name ,
+        image : data.sprites.front_default,
+        type :  type ,
+        level : "base" ,
+        stats: {
+            hp : data.stats.find(item => item.stat.name === "hp").base_stat ,
+            attack :data.stats.find (item => item.stat.name === "attack").base_stat   ,
+            defence : data.stats.find( item => item.stat.name === "defense").base_stat 
+        }  ,
+        description: desc
+       
+
+    }
+     return data_objet 
+
+      })
+      .catch (error => console.error( error))
+    
+}
 
 
 
@@ -114,12 +156,15 @@ export async function getSommeType ( type){
         const lastIndex = dubit + 20
   const  newArry = array.slice( dubit ,lastIndex )
      const arrayName = newArry.map(item => item.pokemon.name)
-     let data = [] ; 
-     arrayName.forEach(async name  => {
-        const data_caracter = await get_caracter ( name) 
+      
+     let data = [] ;
+    
+     arrayName.forEach(  name  => {
+        const data_caracter =  get_caracter ( name) 
         data.push(data_caracter)
      });
-    return data
+      
+    return Promise.all ( data )
     }
 // -------------------------------------------------------------
 // traduction (translayted by AI )

@@ -1,6 +1,6 @@
 import { creatures } from './storage.js'
 import { Affichez , Affichez_details , affichez_filter } from './ui.js';
-import { getSommeType , get20ByType} from './services/api.js'
+import { getSommeType , get20ByType , get_caracterById} from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
 
@@ -33,14 +33,14 @@ Affichez(creatures , grid);
 // 2. DÉTAIL
 
 
-grid.addEventListener('click', (event) => {
+grid.addEventListener('click', async (event) => {
   let clicked = event.target.closest('.select_card')
   if (clicked) {
     const card_select = clicked.querySelector('.find_cart')
     const id_card_select = card_select.innerHTML
     console.log(id_card_select)
-    const index_card_select = creatures.findIndex(element => element.id == id_card_select)
-    Affichez_details(details , index_card_select , creatures , ajout_list)
+    const data_CS =  await get_caracterById(id_card_select)
+    Affichez_details(details , data_CS , ajout_list)
 
  }}
 )
@@ -79,7 +79,7 @@ let input = search.addEventListener('input', (event) => {
   let card_recherche = creatures.filter(arg => arg.name.toLowerCase().includes(input_search))
 
   card_recherche.forEach(cart => {
-    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
+    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card   flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
           
           <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
           <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
@@ -128,9 +128,11 @@ const click_type = type.addEventListener('click', async (event) =>  {
     console.log( caracterSommeType )
     let depart = 0; 
     let caracter20Filter = await get20ByType (caracterSommeType , depart)
-     console.log (caracter20Filter)
-    caracter20Filter.forEach(cart => {
-     affichez_filter (cart , grid )
+   
+    console.log(caracter20Filter)
+     caracter20Filter.forEach( cart => {
+      console.log('done')
+      affichez_filter (cart , grid )
     })
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
