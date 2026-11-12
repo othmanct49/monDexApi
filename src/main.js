@@ -49,18 +49,7 @@ grid.addEventListener('click', (event) => {
     const index_card_select = creatures.findIndex(element => element.id == id_card_select)
     Affichez_details(details , index_card_select , creatures , ajout_list)
 
- }
-
-
-
-
-
-
-
-
-}
-
-
+ }}
 )
 details.addEventListener('click', (event) => {
   let close = event.target.closest('.close_bot')
@@ -134,25 +123,14 @@ const click_type = type.addEventListener('click', (event) => {
   if (!clickd_button) {
     return;
   }
+    
 
+    
   grid.innerHTML = "";
   if (select_type != 'tous') {
     let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
     index_cart_by_type.forEach(cart => {
-      grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
-          
-          <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
-          <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
-
-            <span class="find_cart absolute left-3 top-2 font-mono text-sm text-muted">${cart.id}</span>
-          </div>
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
-            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
-          </div>
-          <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
-          <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
-        </article> ` )
+     affichez_filter (cart )
     })
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))

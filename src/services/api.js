@@ -47,18 +47,10 @@
       
       .then( async data => {
         const slot1  = data.types.find(item => item.slot ===1) 
-         let  type = null
-        if(slot1  == null) {
-           type = "unknown level " 
-        } else {
-         type = slot1.type.name } 
-        const slot2 = data.types.find(item => item.slot ===2)
-        let type2 = null 
-         if ( slot2 == null ){
-            type2 = "unknown level"
-         } else { 
-            type2 = slot2.type.name
-         }
+       
+       const   type = slot1.type.name  
+
+        
 
         
        const desc =  await get_descrip(data.id)
@@ -68,7 +60,7 @@
         name : data.name ,
         image : data.sprites.front_default,
         type :  type ,
-        level : type2 ,
+        level : "base" ,
         stats: {
             hp : data.stats.find(item => item.stat.name === "hp").base_stat ,
             attack :data.stats.find (item => item.stat.name === "attack").base_stat   ,
@@ -103,4 +95,3 @@ export async function get_descrip(id) {
         return description
     
 }
-console.log (await get_20_caracter (0) )
