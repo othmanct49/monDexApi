@@ -1,18 +1,12 @@
-// =============================================================
-// script.js — Mon Dex
-// =============================================================
-// Les données viennent de data.js (la constante `creatures`).
-// Écrivez votre code ici, fonctionnalité par fonctionnalité.
-// Une carte GitHub Projects et au moins un commit par fonctionnalité.
-
-
+import { creatures } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter } from './ui.js';
+import { getSommeType , get20ByType} from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
-// Supprimez les cartes écrites à la main dans index.html et
-// construisez la grille à partir du tableau `creatures`.
+
  
-import { creatures } from './storage.js'
-import { Affichez , Affichez_details } from './ui.js';
+
+
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
 
@@ -37,8 +31,7 @@ Affichez(creatures , grid);
 
 // -------------------------------------------------------------
 // 2. DÉTAIL
-// const cart= document.querySelectorAll('.select');
-// cart.addEventlistener("click"; get_cart ) ;
+
 
 grid.addEventListener('click', (event) => {
   let clicked = event.target.closest('.select_card')
@@ -80,7 +73,9 @@ let search = document.getElementById('search');
 
 let input = search.addEventListener('input', (event) => {
   let input_search = event.target.value.toLowerCase();
+
   grid.innerHTML = " "
+  
   let card_recherche = creatures.filter(arg => arg.name.toLowerCase().includes(input_search))
 
   card_recherche.forEach(cart => {
@@ -116,8 +111,8 @@ let input = search.addEventListener('input', (event) => {
 // « Tous » réinitialise le filtre.
 // La recherche et le filtre fonctionnent ENSEMBLE.
 const type = document.querySelector('#filters')
-const click_type = type.addEventListener('click', (event) => {
-  const select_type = event.target.innerHTML.toLowerCase()
+const click_type = type.addEventListener('click', async (event) =>  {
+  const select_type = event.target.innerHTML
   const clickd_button = event.target.closest('button')
   const remove_style_button = type.querySelectorAll('button')
   if (!clickd_button) {
@@ -127,10 +122,15 @@ const click_type = type.addEventListener('click', (event) => {
 
     
   grid.innerHTML = "";
-  if (select_type != 'tous') {
-    let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
-    index_cart_by_type.forEach(cart => {
-     affichez_filter (cart )
+  if (select_type != 'Tous') {
+    // let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
+    let caracterSommeType =  await  getSommeType (select_type)
+    console.log( caracterSommeType )
+    let depart = 0; 
+    let caracter20Filter = await get20ByType (caracterSommeType , depart)
+     console.log (caracter20Filter)
+    caracter20Filter.forEach(cart => {
+     affichez_filter (cart , grid )
     })
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
@@ -141,7 +141,7 @@ const click_type = type.addEventListener('click', (event) => {
 
 
   } else {
-    Affichez()
+    Affichez(creatures , grid)
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
   }
