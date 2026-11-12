@@ -1,5 +1,5 @@
 
-
+///// affichez dans grid :
 export function Affichez(creatures , dom ) {
   creatures.forEach(cart => {
 
@@ -22,3 +22,32 @@ export function Affichez(creatures , dom ) {
 
   });
 }
+// Affichez details 
+export function Affichez_details ( details , index_card_select , creatures , ajout_list){
+
+    details.innerHTML = `<div class="flex items-center justify-between">
+            <span class="font-mono text-sm text-muted">${creatures[index_card_select].id} · Détail</span>
+            <button  type="button" aria-label="Fermer le détail" class="close_bot btn-outline w-11 px-0">✕</button>
+          </div>
+          <div class="flex h-48 items-center justify-center rounded-2xl bg-brand-light">
+            <img src="${creatures[index_card_select].image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
+          </div> 
+          <div class="flex items-center justify-between">
+            <h2 class="font-display text-3xl font-extrabold">${creatures[index_card_select].name}</h2>
+            <span class="rounded-full bg-brand-light px-3 py-1 text-sm font-bold">${creatures[index_card_select].type}</span>
+          </div>
+          <p class="text-gray-700">${creatures[index_card_select].description}</p>
+          <div class="flex flex-col gap-2 text-sm">
+            <div class="grid grid-cols-[80px_1fr_40px] items-center gap-2">
+            <span class="font-bold">PV</span>
+            <div class="h-3  w-full  rounded-full bg-ground">
+              <span class="block h-3  rounded-full bg-brand" style="width:${creatures[index_card_select].stats.hp}%" ></span>
+            </div>
+            <span class="text-right font-mono">${creatures[index_card_select].stats.hp}</span>
+            </div>
+            <div class="grid grid-cols-[80px_1fr_40px] items-center gap-2"><span class="font-bold">Attaque</span><span class="h-3 rounded-full bg-ground"><span class="block h-3  rounded-full bg-brand" style="width:${creatures[index_card_select].stats.attack}% " ></span></span><span class="text-right font-mono">${creatures[index_card_select].stats.attack} </span></div>
+            <div class="grid grid-cols-[80px_1fr_40px] items-center gap-2"><span class="font-bold">Défense</span><span class="h-3 rounded-full bg-ground"><span class="block h-3  rounded-full bg-brand"style="width:${creatures[index_card_select].stats.defence}% " ></span></span><span class="text-right font-mono">${creatures[index_card_select].stats.defence}</span></div>
+          </div>
+          <button id="ajouter" data-id="${creatures[index_card_select].id}" ${ajout_list.some(element => element.id == creatures[index_card_select].id) ? 'disabled' : ''} type="button" class="btn-primary">Ajouter à l'équipe</button>`}
+ //////
+ 
