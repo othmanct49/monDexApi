@@ -376,3 +376,4 @@ const retirer_listener = get_team_div_r.addEventListener('click', (event) => {
 // -------------------------------------------------------------
 // BONUS : LocalStorage, Fetch API, tri, comparaison
 // -------------------------------------------------------------
+

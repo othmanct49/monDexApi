@@ -95,3 +95,9 @@ export async function get_descrip(id) {
         return description
     
 }
+// -------------------------------------------------------------
+// traduction
+// -------------------------------------------------------------
+   function traduction (type_en){
+    
+   }
