@@ -1,6 +1,7 @@
 
 ///// affichez dans grid :
 export function Affichez(creatures, dom) {
+  grid.innerHTML=''
   creatures.forEach(cart => {
 
 
@@ -14,7 +15,7 @@ export function Affichez(creatures, dom) {
           </div>
           <div class="flex items-center justify-between gap-2">
             <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
-            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
+            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type.join(" / ")}</span>
           </div>
           <p class="text-sm text-muted">${cart.level} ·${Number(cart.stats.hp) + Number(cart.stats.attack) + Number(cart.stats.defence)} </p>
           <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
@@ -34,7 +35,7 @@ export function Affichez_details(details,  creatures, ajout_list) {
           </div> 
           <div class="flex items-center justify-between">
             <h2 class="font-display text-3xl font-extrabold">${creatures.name}</h2>
-            <span class="rounded-full bg-brand-light px-3 py-1 text-sm font-bold">${creatures.type}</span>
+            <span class="rounded-full bg-brand-light px-3 py-1 text-sm font-bold">${creatures.type.join(" / ")}</span>
           </div>
           <p class="text-gray-700">${creatures.description}</p>
           <div class="flex flex-col gap-2 text-sm">
@@ -52,6 +53,7 @@ export function Affichez_details(details,  creatures, ajout_list) {
 }
 ////// affechez felter 
 export  async function affichez_filter(cart , grid ) {
+  
  
 
    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
@@ -63,9 +65,56 @@ export  async function affichez_filter(cart , grid ) {
           </div>
           <div class="flex items-center justify-between gap-2">
             <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
-            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
+            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type.join(" / ")}</span>
           </div>
           <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
           <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
         </article> ` )
+}
+// affichage serch 
+export function serchaffichag (card_recherche){
+  grid.innerHTML = ''
+  card_recherche.forEach(cart => {
+    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card   flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
+          
+          <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
+          <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
+
+            <span class="find_cart absolute left-3 top-2 font-mono text-sm text-muted">${cart.id}</span>
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
+            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type.join(" / ")}</span>
+          </div>
+          <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
+          <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
+        </article> ` )
+
+
+  })
+}
+export function videcart (){
+  grid.innerHTML = ''
+  for (let i = 0 ; i < 8 ; i ++){
+    grid.insertAdjacentHTML('beforeend', ` <article
+  aria-hidden="true"
+  class="flex flex-col gap-3 rounded-card bg-white p-3 pb-4 motion-safe:animate-pulse"
+>
+  <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
+    <div class="absolute left-3 top-2 h-4 w-10 rounded bg-slate-200"></div>
+    <div class="h-24 w-[240px] rounded-full bg-slate-200"></div>
+  </div>
+
+  <div class="flex items-center justify-between gap-2">
+    <div class="h-6 w-1/2 rounded bg-slate-200"></div>
+    <div class="h-7 w-16 rounded-full bg-brand-light"></div>
+  </div>
+
+  <div class="h-5 w-24 rounded bg-slate-200"></div>
+  <div class="h-10 w-full rounded-xl bg-slate-100"></div>
+</article>` )
+  }
+}
+export function not_fond (){
+  grid.innerHTML  = '<p> not fond <p>'
 }

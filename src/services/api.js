@@ -32,9 +32,9 @@ export async function get_caracterById (id) {
       })
       
       .then( async data => {
-        const slot1  = data.types.find(item => item.slot ===1) 
+      //   const slot1  = data.types.find(item => item.slot ===1) 
        
-       const   type = traduction (slot1.type.name ) 
+      //  const   type = traduction (slot1.type.name ) 
 
         
 
@@ -42,10 +42,10 @@ export async function get_caracterById (id) {
        const desc =  await get_descrip(data.id)
         
          const data_objet = {
-        id : data.id , 
+        id : id , 
         name : data.name ,
         image : data.sprites.front_default,
-        type :  type ,
+        type :  await Promise.all (data.types.map(item => item.type.name)) ,
         level : "base" ,
         stats: {
             hp : data.stats.find(item => item.stat.name === "hp").base_stat ,
@@ -56,7 +56,7 @@ export async function get_caracterById (id) {
        
 
     }
-     return  Promise.all( data_objet )
+     return  data_objet 
 
       })
       .catch (error => console.error( error))
@@ -88,9 +88,9 @@ export async function get_caracterById (id) {
       })
       
       .then( async data => {
-        const slot1  = data.types.find(item => item.slot ===1) 
+      //   const slot1  = data.types.find(item => item.slot ===1) 
        
-       const   type = traduction (slot1.type.name ) 
+      //  const   type = traduction (slot1.type.name ) 
 
         
 
@@ -101,7 +101,7 @@ export async function get_caracterById (id) {
         id : data.id , 
         name : data.name ,
         image : data.sprites.front_default,
-        type :  type ,
+        type : await Promise.all (data.types.map(item => item.type.name)) ,
         level : "base" ,
         stats: {
             hp : data.stats.find(item => item.stat.name === "hp").base_stat ,
@@ -170,8 +170,8 @@ export async function getSommeType ( type){
   export async function rocherch(input ) {
       return await fetch (`${URL_BASE}/pokemon?limit=1351&offset=0`)
           .then ( rep => {
-            if (!rep){
-              throw new  Error ('not fund')
+            if (!rep.ok){
+              throw new  Error (' check netweork and try agin')
             } 
             return rep.json()
           } )
@@ -182,15 +182,43 @@ export async function getSommeType ( type){
               return Promise.all(filterData)
           } )
           .then(data => {
+        
                    const  newData = data.map(item => item.name).slice(0 , 20)
+                   
                    return Promise.all(newData)
           })
       
           .catch (error => console.error(error) )
       
     }
-    /////////// get 
+    /////////// roucherch felter 
+       export async function rocherchfelter (input ) {
+      return await fetch (`${URL_BASE}/pokemon?limit=1351&offset=0`)
+          .then ( rep => {
+            if (!rep.ok){
+              throw new  Error (' check netweork and try agin')
+            } 
+            return rep.json()
+          } )
+          .then ( data => {
+         const   filterData =  data.results.filter(item => item.name.includes(input) )
      
+              
+              return Promise.all(filterData)
+          } )
+          .then(data => {
+            if ( data.length === 0 ){
+              throw new  Error ('not fund')
+
+            }
+                   const  newData = data.map(item => item.name).slice(0 , 20)
+                   
+                   return Promise.all(newData)
+          })
+      
+          .catch (error => console.error(error) )
+      
+    }
 // -------------------------------------------------------------
 // traduction (translayted by AI )
 // -------------------------------------------------------------

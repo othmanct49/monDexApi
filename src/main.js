@@ -1,12 +1,14 @@
-import { creatures , pluscaracter  , numberPlus , suprimernumberPlusfiltre } from './storage.js'
-import { Affichez , Affichez_details , affichez_filter } from './ui.js';
-import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, get_caracter } from './services/api.js'
+import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond } from './ui.js';
+import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, get_caracter , get_20_caracter } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
 
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
 const Charger_plus = document.getElementById('Charger_plus')
+videcart() 
+export let  creatures  = await get_20_caracter (numberPlus) ;
 Affichez(creatures , grid);
 
 ///// charges plus 
@@ -16,7 +18,11 @@ let filter_botton_cliced = 'Tous'
     if (!clicked) {return}
      if (filter_botton_cliced == 'Tous'){
     pluscaracter(grid , filter_botton_cliced)}
-     
+   
+
+    
+  
+
 
 
   })
@@ -45,7 +51,8 @@ grid.addEventListener('click', async (event) => {
     const card_select = clicked.querySelector('.find_cart')
     const id_card_select = card_select.innerHTML
     console.log(id_card_select)
-    const data_CS =  await get_caracterById(id_card_select)
+    const data_CS =  await  get_caracterById (id_card_select)
+    console.log(data_CS)
     Affichez_details(details , data_CS , ajout_list)
 
  }}
@@ -79,30 +86,22 @@ let search = document.getElementById('search');
 
 let input = search.addEventListener('input', async (event) => {
   let input_search = event.target.value.toLowerCase();
-
+   if (filter_botton_cliced === "Tous"){
   grid.innerHTML = " "
+  videcart ()
   
-  let liste_recherche = await rocherch(input_search)
-  console.log(liste_recherche)
+  let liste_recherche = await rocherch( input_search )
+    
   let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
-  card_recherche.forEach(cart => {
-    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card   flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
-          
-          <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
-          <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
-
-            <span class="find_cart absolute left-3 top-2 font-mono text-sm text-muted">${cart.id}</span>
-          </div>
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
-            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
-          </div>
-          <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
-          <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
-        </article> ` )
+    if (card_recherche.length === 0 ){
+    not_fond()
+    return
+   }
 
 
-  })
+       serchaffichag(card_recherche)}
+
+  
 })
 
 
@@ -130,8 +129,10 @@ const click_type = type.addEventListener('click', async (event) =>  {
 
     
   grid.innerHTML = "";
+   videcart(grid) 
   if (select_type != 'Tous') {
      filter_botton_cliced =  select_type
+     console.log(filter_botton_cliced)
      suprimernumberPlusfiltre()
     // let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
     let caracterSommeType =  await  getSommeType (select_type)
@@ -140,6 +141,7 @@ const click_type = type.addEventListener('click', async (event) =>  {
     let caracter20Filter = await get20ByType (caracterSommeType , depart)
    
     console.log(caracter20Filter)
+    grid.innerHTML =''
      caracter20Filter.forEach( cart => {
       console.log('done')
       affichez_filter (cart , grid )
@@ -153,7 +155,10 @@ const click_type = type.addEventListener('click', async (event) =>  {
 
 
   } else {
+    filter_botton_cliced = 'Tous'
+    
     Affichez(creatures , grid)
+
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
   }
