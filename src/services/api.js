@@ -1,7 +1,7 @@
  const URL_BASE = "https://pokeapi.co/api/v2/"
 
   export async function get_20_caracter ( depart ){
-     return  await fetch (`${URL_BASE}pokemon?limit=200&offset=${depart}`)
+     return  await fetch (`${URL_BASE}pokemon?limit=20&offset=${depart}`)
      .then (rep => {
         if (!rep.ok){
             throw new Error ('not fond')

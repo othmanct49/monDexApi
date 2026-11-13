@@ -1,19 +1,22 @@
-import { creatures } from './storage.js'
+import { creatures , pluscaracter  , numberPlus } from './storage.js'
 import { Affichez , Affichez_details , affichez_filter } from './ui.js';
-import { getSommeType , get20ByType , get_caracterById} from './services/api.js'
+import { getSommeType , get20ByType , get_caracterById } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
-
- 
-
-
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
-
-
-
-
+const Charger_plus = document.getElementById('Charger_plus')
 Affichez(creatures , grid);
+
+///// charges plus 
+  Charger_plus.addEventListener('click' , event => {
+    const clicked = event.target.closest('#Charger_plus')
+    if (!clicked) {return}
+
+    pluscaracter(grid) 
+
+
+  })
 
 
 
