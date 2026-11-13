@@ -690,6 +690,18 @@ video {
   top: 0.5rem;
 }
 
+.top-4 {
+  top: 1rem;
+}
+
+.left-10 {
+  left: 2.5rem;
+}
+
+.right-1 {
+  right: 0.25rem;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -947,8 +959,16 @@ video {
   border-radius: 0.25rem;
 }
 
+.rounded-\[\] {
+  border-radius: ;
+}
+
 .border-2 {
   border-width: 2px;
+}
+
+.border-0 {
+  border-width: 0px;
 }
 
 .border-ink {
@@ -998,6 +1018,10 @@ video {
 .bg-slate-200 {
   --tw-bg-opacity: 1;
   background-color: rgb(226 232 240 / var(--tw-bg-opacity, 1));
+}
+
+.bg-transparent {
+  background-color: transparent;
 }
 
 .p-3 {

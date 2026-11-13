@@ -1,4 +1,4 @@
-import {get_20_caracter , get_descrip ,get_caracter  , getSommeType , get20ByType } from './services/api.js'
+import {get_20_caracter , get_descrip ,get_caracter  , getSommeType , get20ByType , get_caracterById } from './services/api.js'
 import { Affichez  , affichez_filter} from './ui.js';
 import { creatures } from './main.js'
 export let numberPlus = 0 ;
@@ -30,4 +30,22 @@ export async function plusfeltre20 (grid ) {
           grid.innerHTML =''
           Affichez(  creaturesf , grid )
 }
- 
+export async function addFavLS ( id ){
+    console.log(id)
+    const data = await get_caracterById(id)
+    console.log(data)
+    const favList = JSON.parse(localStorage.getItem('fav')) || []
+      favList.push (data)
+      localStorage.setItem('fav' , JSON.stringify(favList))
+}
+export  function removeFavLS (id){
+    const favList = JSON.parse(localStorage.getItem('fav'))
+    const find_index = favList.findIndex( item => item.id == id )
+     if (find_index === -1) {return}
+    favList.splice(find_index , 1)
+    localStorage.setItem('fav' ,JSON.stringify(favList))
+} 
+export function getfavLs(){
+    const listFav =  JSON.parse(localStorage.getItem('fav')) || [] 
+    return listFav 
+}

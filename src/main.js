@@ -1,12 +1,15 @@
-import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre } from './storage.js'
-import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond } from './ui.js';
+import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre , addFavLS , removeFavLS } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond , affechezFav } from './ui.js';
 import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, get_caracter , get_20_caracter } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
 
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
+const fav_aj = document.getElementById('fav_aj')
 const Charger_plus = document.getElementById('Charger_plus')
+ affechezFav(  fav_aj)
+ 
 videcart() 
 export let  creatures  = await get_20_caracter (numberPlus) ;
 Affichez(creatures , grid);
@@ -94,7 +97,7 @@ let input = search.addEventListener('input', async (event) => {
     
   let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
     if (card_recherche.length === 0 ){
-    not_fond()
+    not_fond( input_search )
     return
    }
 
@@ -281,6 +284,44 @@ const listener = get_form.addEventListener('input', (event) => {
 
           
         })
+ ////////////---------------------------------------------
+    
+//                 favoriiit 
+
+//////////// ---------------------------------------------
+
+      grid.addEventListener('click' , async event => {
+        const clickevent = event.target.closest('[data-fav]')
+        if (!clickevent ){
+          return 
+        }
+         const getIdCart = clickevent.dataset.fav
+         console.log (getIdCart)
+         await addFavLS (getIdCart)
+         clickevent.innerHTML= `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#EA3323"><path d="M12,21l-1.45-1.3q-2.53-2.27-4.18-3.92q-1.65-1.65-2.63-2.96Q2.78,11.5 2.39,10.4T2,8.15Q2,5.8 3.58,4.22T7.5,2.65q1.3,0 2.48,0.55T12,4.75q0.85-1 2.03-1.55T16.5,2.65q2.35,0 3.93,1.57T22,8.15q0,1.15-0.39,2.25t-1.36,2.41q-0.97,1.31-2.63,2.96q-1.65,1.65-4.17,3.92L12,21Z"/></svg>`
+         clickevent.removeAttribute('data-fav')
+         clickevent.setAttribute('data-remfav' , `${getIdCart}`)
+         affechezFav(  fav_aj)
+         })
+        grid.addEventListener('click' , async event => {
+        const clickeventremov = event.target.closest('[data-remfav]')
+        if (!clickeventremov){
+          return
+        }
+        const getIdCartRemov =  clickeventremov.dataset.remfav
+          removeFavLS(getIdCartRemov)
+          clickeventremov.innerHTML=` <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#EA3323"><path d="M12,21l-1.45-1.3q-2.53-2.27-4.18-3.92q-1.65-1.65-2.63-2.96Q2.78,11.5 2.39,10.4T2,8.15Q2,5.8 3.58,4.22T7.5,2.65q1.3,0 2.48,0.55T12,4.75q0.85-1 2.03-1.55T16.5,2.65q2.35,0 3.93,1.57T22,8.15q0,1.15-0.39,2.25t-1.36,2.41q-0.97,1.31-2.63,2.96q-1.65,1.65-4.17,3.92L12,21Zm0-2.7q2.4-2.15 3.95-3.69t2.45-2.67t1.25-2.03Q20,9.02 20,8.15q0-1.5-1-2.5t-2.5-1q-1.17,0-2.17,0.66q-1,0.66-1.38,1.69h-1.9Q10.68,5.97 9.68,5.31T7.5,4.65q-1.5,0-2.5,1T4,8.15Q4,9.02 4.35,9.91T5.6,11.94t2.45,2.67T12,18.3Zm0-6.83Z"/></svg>`
+          clickeventremov.removeAttribute('data-remfav')
+          clickeventremov.setAttribute('data-fav' , `${getIdCartRemov}`)
+          affechezFav(  fav_aj)
+        })
+
+
+
+
+
+
+
 
 // -------------------------------------------------------------
 
@@ -295,7 +336,7 @@ const listener = get_form.addEventListener('input', (event) => {
        const cart_click = event.target.closest('.select_card')
        const erreur_messag = document.querySelector('#message')
        const get_team_div = document.getElementById('team_aj')
-       const find_id = cart_click.querySelector('.find_cart')
+       const find_id = document.querySelector('.find_cart')
        
 
 
