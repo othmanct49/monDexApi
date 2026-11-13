@@ -56,7 +56,7 @@ export async function get_caracterById (id) {
        
 
     }
-     return data_objet 
+     return  Promise.all( data_objet )
 
       })
       .catch (error => console.error( error))
@@ -140,21 +140,21 @@ export async function get_descrip(id) {
 ////// 20 cracter somme type 
 export async function getSommeType ( type){
  const   type_en =   traductionen(type)
-  return   fetch( `${URL_BASE}type/${type_en}/`)
+  return  await  fetch( `${URL_BASE}type/${type_en}/`)
     .then ( rep => {
         if (!rep.ok) { throw new Error ('not fund') }
         return rep.json()
     })
     .then ( async data =>  {
         const pokemon = data.pokemon 
-        return  await pokemon
+        return  Promise.all( pokemon)
     })
     .catch (error => console.log(error))}
 
 //////// get 20 cracter by type 
    export async function get20ByType (array , dubit ){
         const lastIndex = dubit + 20
-  const  newArry = array.slice( dubit ,lastIndex )
+  const  newArry = await array.slice( dubit ,lastIndex )
      const arrayName = newArry.map(item => item.pokemon.name)
       
      let data = [] ;
@@ -166,10 +166,35 @@ export async function getSommeType ( type){
       
     return Promise.all ( data )
     }
+    ///////rocherch 
+  export async function rocherch(input ) {
+      return await fetch (`${URL_BASE}/pokemon?limit=1351&offset=0`)
+          .then ( rep => {
+            if (!rep){
+              throw new  Error ('not fund')
+            } 
+            return rep.json()
+          } )
+          .then ( data => {
+         const   filterData =  data.results.filter(item => item.name.includes(input) )
+     
+              
+              return Promise.all(filterData)
+          } )
+          .then(data => {
+                   const  newData = data.map(item => item.name).slice(0 , 20)
+                   return Promise.all(newData)
+          })
+      
+          .catch (error => console.error(error) )
+      
+    }
+    /////////// get 
+     
 // -------------------------------------------------------------
 // traduction (translayted by AI )
 // -------------------------------------------------------------
-   function traduction (type_en){
+ export  function traduction (type_en){
 const typesFr = {     // translate by AI
   normal: "Normal",
   fighting: "Combat",
@@ -192,7 +217,7 @@ const typesFr = {     // translate by AI
 }
 return typesFr[type_en]
    }
-      function traductionen (type_fr){
+    export  function traductionen (type_fr){
         const typesEn = {
   "Normal": "normal",  // translate by AI 
   "Combat": "fighting",

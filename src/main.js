@@ -1,19 +1,22 @@
-import { creatures , pluscaracter  , numberPlus } from './storage.js'
+import { creatures , pluscaracter  , numberPlus , suprimernumberPlusfiltre } from './storage.js'
 import { Affichez , Affichez_details , affichez_filter } from './ui.js';
-import { getSommeType , get20ByType , get_caracterById } from './services/api.js'
+import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, get_caracter } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
+
 let details = document.getElementById('detail')
 let grid = document.getElementById('grid')
 const Charger_plus = document.getElementById('Charger_plus')
 Affichez(creatures , grid);
 
 ///// charges plus 
+let filter_botton_cliced = 'Tous'
   Charger_plus.addEventListener('click' , event => {
     const clicked = event.target.closest('#Charger_plus')
     if (!clicked) {return}
-
-    pluscaracter(grid) 
+     if (filter_botton_cliced == 'Tous'){
+    pluscaracter(grid , filter_botton_cliced)}
+     
 
 
   })
@@ -74,13 +77,14 @@ details.addEventListener('click', (event) => {
 // (sans tenir compte des majuscules).
 let search = document.getElementById('search');
 
-let input = search.addEventListener('input', (event) => {
+let input = search.addEventListener('input', async (event) => {
   let input_search = event.target.value.toLowerCase();
 
   grid.innerHTML = " "
   
-  let card_recherche = creatures.filter(arg => arg.name.toLowerCase().includes(input_search))
-
+  let liste_recherche = await rocherch(input_search)
+  console.log(liste_recherche)
+  let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
   card_recherche.forEach(cart => {
     grid.insertAdjacentHTML('beforeend', `  <article   class="select_card   flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
           
@@ -113,6 +117,7 @@ let input = search.addEventListener('input', (event) => {
 // Les boutons de type n'affichent que les créatures de ce type ;
 // « Tous » réinitialise le filtre.
 // La recherche et le filtre fonctionnent ENSEMBLE.
+
 const type = document.querySelector('#filters')
 const click_type = type.addEventListener('click', async (event) =>  {
   const select_type = event.target.innerHTML
@@ -121,11 +126,13 @@ const click_type = type.addEventListener('click', async (event) =>  {
   if (!clickd_button) {
     return;
   }
-    
+     
 
     
   grid.innerHTML = "";
   if (select_type != 'Tous') {
+     filter_botton_cliced =  select_type
+     suprimernumberPlusfiltre()
     // let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
     let caracterSommeType =  await  getSommeType (select_type)
     console.log( caracterSommeType )
