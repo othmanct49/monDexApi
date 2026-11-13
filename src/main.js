@@ -9,7 +9,7 @@ let grid = document.getElementById('grid')
 const fav_aj = document.getElementById('fav_aj')
 const Charger_plus = document.getElementById('Charger_plus')
  affechezFav(  fav_aj)
- 
+
 videcart() 
 export let  creatures  = await get_20_caracter (numberPlus) ;
 Affichez(creatures , grid);
@@ -145,10 +145,10 @@ const click_type = type.addEventListener('click', async (event) =>  {
    
     console.log(caracter20Filter)
     grid.innerHTML =''
-     caracter20Filter.forEach( cart => {
-      console.log('done')
-      affichez_filter (cart , grid )
-    })
+     
+     
+      affichez_filter (caracter20Filter  )
+
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
