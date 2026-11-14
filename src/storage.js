@@ -23,12 +23,12 @@ export async function  pluscaracter (  grid  ){
 export function suprimernumberPlusfiltre (){
     numberPlusfiltre = 0
 }
-export async function plusfeltre20 (grid ) {
+export async function plusfeltre20 (grid  , filterBotton) {
       numberPlusfiltre +=20 
         const arraySommeType = await getSommeType(filterBotton)
         creaturesf.push(...(await get20ByType(arraySommeType , numberPlusfiltre )))
           grid.innerHTML =''
-          Affichez(  creaturesf , grid )
+        affichez_filter(  creaturesf   )
 }
 export async function addFavLS ( id ){
     console.log(id)

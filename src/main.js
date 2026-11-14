@@ -1,13 +1,14 @@
-import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre , addFavLS , removeFavLS } from './storage.js'
-import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond , affechezFav } from './ui.js';
-import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, get_caracter , get_20_caracter } from './services/api.js'
+import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre , addFavLS , removeFavLS , plusfeltre20 } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond , affechezFav  } from './ui.js';
+import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, rocherchfelter,  get_caracter , get_20_caracter  } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
 
 let details = document.getElementById('detail')
-let grid = document.getElementById('grid')
+export  let grid = document.getElementById('grid')
 const fav_aj = document.getElementById('fav_aj')
 const Charger_plus = document.getElementById('Charger_plus')
+const effacer = document.getElementById('effacer')
  affechezFav(  fav_aj)
 
 videcart() 
@@ -20,7 +21,11 @@ let filter_botton_cliced = 'Tous'
     const clicked = event.target.closest('#Charger_plus')
     if (!clicked) {return}
      if (filter_botton_cliced == 'Tous'){
-    pluscaracter(grid , filter_botton_cliced)}
+    pluscaracter(grid )}
+    else {
+      plusfeltre20(grid ,filter_botton_cliced )
+      
+    }
    
 
     
@@ -29,7 +34,13 @@ let filter_botton_cliced = 'Tous'
 
 
   })
-
+ /////////// Effacer
+  effacer.addEventListener('click' , event =>{
+  const clickedEffacer = event.target.closest('#effacer')
+  if (!clickedEffacer){return}
+     window.location.reload()
+ }
+ )
 
 
 
@@ -86,9 +97,7 @@ details.addEventListener('click', (event) => {
 // La liste se met à jour pendant la saisie d'un nom
 // (sans tenir compte des majuscules).
 let search = document.getElementById('search');
-
-let input = search.addEventListener('input', async (event) => {
-  let input_search = event.target.value.toLowerCase();
+  async function serch ( input_search ){
    if (filter_botton_cliced === "Tous"){
   grid.innerHTML = " "
   videcart ()
@@ -103,6 +112,44 @@ let input = search.addEventListener('input', async (event) => {
 
 
        serchaffichag(card_recherche)}
+       /// serch by type
+       else {
+         grid.innerHTML = " "
+  videcart ()
+  
+  let card_recherche = await rocherchfelter( input_search , filter_botton_cliced  )
+    
+  // let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
+    if (card_recherche.length === 0 ){
+    not_fond( input_search )
+    return
+   }
+
+
+       serchaffichag(card_recherche)
+   
+   }
+      
+      
+      
+      }
+
+let input = search.addEventListener('input', async (event) => {
+
+  let input_search = event.target.value.toLowerCase();
+
+      await serch(input_search)
+
+  
+
+})
+          grid.addEventListener('click' , async event => {
+          const event_target =event.target.closest('#reessayer')
+          if(!event_target){return}
+           
+           await serch(search.value.toLowerCase() )
+
+         
 
   
 })
@@ -113,12 +160,10 @@ let input = search.addEventListener('input', async (event) => {
 
 // -------------------------------------------------------------
 
-
+     // 4. FILTRE
 // -------------------------------------------------------------
-// 4. FILTRE
-// Les boutons de type n'affichent que les créatures de ce type ;
-// « Tous » réinitialise le filtre.
-// La recherche et le filtre fonctionnent ENSEMBLE.
+
+
 
 const type = document.querySelector('#filters')
 const click_type = type.addEventListener('click', async (event) =>  {
@@ -134,6 +179,7 @@ const click_type = type.addEventListener('click', async (event) =>  {
   grid.innerHTML = "";
    videcart(grid) 
   if (select_type != 'Tous') {
+    search.value=''
      filter_botton_cliced =  select_type
      console.log(filter_botton_cliced)
      suprimernumberPlusfiltre()
@@ -159,7 +205,7 @@ const click_type = type.addEventListener('click', async (event) =>  {
 
   } else {
     filter_botton_cliced = 'Tous'
-    
+      search.value=''
     Affichez(creatures , grid)
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))

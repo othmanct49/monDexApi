@@ -181,7 +181,24 @@ export function videcart (){
   }
 }
 export function not_fond (input ){
-  grid.innerHTML  = `<p> Aucune créature trouvée pour ${input} <p>`
+  grid.innerHTML  = `<p> Aucune créature trouvée pour ${input} <p>  `
+
+}
+export function messageEreur (erreur , grid){
+  grid.innerHTML = ''
+  const message = document.createElement('p')
+  message.id = 'errormessage'
+  // message.classList.add('')
+  message.textContent = erreur
+  grid.appendChild (message)
+  const Reessayer = document.createElement('button')
+  Reessayer.id = 'reessayer' 
+  Reessayer.textContent =  'Reessayer'
+  grid.appendChild (message)
+
+
+
+
 }
 // ===================================
 //       affichez fav
@@ -199,7 +216,3 @@ export function affechezFav(  fav_aj){
 
 }
 
-export function saveFAV (){
-
-
-}

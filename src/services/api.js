@@ -1,10 +1,12 @@
+ import {messageEreur} from '../ui.js' 
+ import {grid} from '../main.js'
  const URL_BASE = "https://pokeapi.co/api/v2/"
 
   export async function get_20_caracter ( depart ){
      return  await fetch (`${URL_BASE}pokemon?limit=20&offset=${depart}`)
      .then (rep => {
         if (!rep.ok){
-            throw new Error ('not fond')
+            throw new Error ('Impossible de charger les données')
 
         }
         return rep.json()
@@ -14,7 +16,10 @@
         const caracter = data.results.map(item => get_caracter(item.name))
         return  Promise.all(caracter)
      })
-     .catch  (error => console.error(error))
+    //  .catch  (error => console.error(error))
+     .catch ( error => {messageEreur( "Impossible de charger les données. Vérifiez votre connexion." , grid)
+        console.log (error)
+       } )
   }
 
 
@@ -39,7 +44,7 @@ export async function get_caracterById (id) {
         
 
         
-       const desc =  await get_descrip(data.id)
+       const desc =  await get_descrip(data.species.url)
         
          const data_objet = {
         id : id , 
@@ -59,7 +64,9 @@ export async function get_caracterById (id) {
      return  data_objet 
 
       })
-      .catch (error => console.error( error))
+      .catch (error => {messageEreur( "Impossible de charger les données. Vérifiez votre connexion." , grid)
+        console.log (error)
+       })
     
 }
 
@@ -88,14 +95,12 @@ export async function get_caracterById (id) {
       })
       
       .then( async data => {
-      //   const slot1  = data.types.find(item => item.slot ===1) 
-       
-      //  const   type = traduction (slot1.type.name ) 
+
 
         
 
         
-       const desc =  await get_descrip(data.id)
+       const desc =  await get_descrip(data.species.url)
         
          const data_objet = {
         id : data.id , 
@@ -119,8 +124,8 @@ export async function get_caracterById (id) {
 
 
 }
-export async function get_descrip(id) { 
-     const description =  await fetch ( `${URL_BASE}/pokemon-species/${id}/`)
+export async function get_descrip(url) { 
+     const description =  await fetch ( `${url}`)
           .then(repons => {
             if (!repons){
                 throw new Error ("description not fund ")
@@ -128,12 +133,14 @@ export async function get_descrip(id) {
             return repons.json()
           })
           .then (descrip => {
-         const   des = descrip.flavor_text_entries.find(item => item.language.name === "en").flavor_text
+         const   des = descrip.flavor_text_entries.find(item => item.language.name === "fr").flavor_text
                
           return des.replace(/\s+/g ," ")
 
           } )
-          .catch (error => console.error(error))
+          .catch (error => {messageEreur( "Impossible de charger les données. Vérifiez votre connexion." , grid)
+        console.log (error)
+       })
         return description
     
 }
@@ -149,7 +156,9 @@ export async function getSommeType ( type){
         const pokemon = data.pokemon 
         return  Promise.all( pokemon)
     })
-    .catch (error => console.log(error))}
+    .catch (error => {messageEreur( "Impossible de charger les données. Vérifiez votre connexion." , grid)
+        console.log (error)
+       })}
 
 //////// get 20 cracter by type 
    export async function get20ByType (array , dubit ){
@@ -166,7 +175,9 @@ export async function getSommeType ( type){
       
     return Promise.all ( data )
     }
-    ///////rocherch 
+    //==============================================
+    ///////          rocherch 
+    //==========================================
   export async function rocherch(input ) {
       return await fetch (`${URL_BASE}/pokemon?limit=1351&offset=0`)
           .then ( rep => {
@@ -188,37 +199,24 @@ export async function getSommeType ( type){
                    return Promise.all(newData)
           })
       
-          .catch (error => console.error(error) )
-      
+       .catch ( error => {messageEreur( "Impossible de charger les données. Vérifiez votre connexion." , grid)
+        console.log (error)
+       } )
+
     }
     /////////// roucherch felter 
-       export async function rocherchfelter (input ) {
-      return await fetch (`${URL_BASE}/pokemon?limit=1351&offset=0`)
-          .then ( rep => {
-            if (!rep.ok){
-              throw new  Error (' check netweork and try agin')
-            } 
-            return rep.json()
-          } )
-          .then ( data => {
-         const   filterData =  data.results.filter(item => item.name.includes(input) )
-     
-              
-              return Promise.all(filterData)
-          } )
-          .then(data => {
-            if ( data.length === 0 ){
-              throw new  Error ('not fund')
+       export async function rocherchfelter (input , filter_botton_cliced  ) {
+          const sommeType = await getSommeType ( filter_botton_cliced )
+             console.log (sommeType)
+             const serch =   sommeType.filter(item => item.pokemon.name.includes(input))
+             console.log(serch)
+            
+             const caracter = serch.map( async cart =>  await get_caracter( cart.pokemon.name )) 
 
-            }
-                   const  newData = data.map(item => item.name).slice(0 , 20)
-                   
-                   return Promise.all(newData)
-          })
-      
-          .catch (error => console.error(error) )
-      
-    }
+             return Promise.all(caracter)
+          }
+    
+
 // -------------------------------------------------------------
 // traduction (translayted by AI )
 // -------------------------------------------------------------
