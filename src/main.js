@@ -1,26 +1,46 @@
-// =============================================================
-// script.js — Mon Dex
-// =============================================================
-// Les données viennent de data.js (la constante `creatures`).
-// Écrivez votre code ici, fonctionnalité par fonctionnalité.
-// Une carte GitHub Projects et au moins un commit par fonctionnalité.
-
-
+import {   pluscaracter  , numberPlus , suprimernumberPlusfiltre , addFavLS , removeFavLS , plusfeltre20 } from './storage.js'
+import { Affichez , Affichez_details , affichez_filter , serchaffichag  , videcart , not_fond , affechezFav  } from './ui.js';
+import { getSommeType , get20ByType , get_caracterById  , traductionen , rocherch, rocherchfelter,  get_caracter , get_20_caracter  } from './services/api.js'
 // -------------------------------------------------------------
 // 1. AFFICHAGE
-// Supprimez les cartes écrites à la main dans index.html et
-// construisez la grille à partir du tableau `creatures`.
- 
-import { creatures } from './storage.js'
-import { Affichez , Affichez_details } from './ui.js';
+
 let details = document.getElementById('detail')
-let grid = document.getElementById('grid')
+export  let grid = document.getElementById('grid')
+const fav_aj = document.getElementById('fav_aj')
+const Charger_plus = document.getElementById('Charger_plus')
+const effacer = document.getElementById('effacer')
+ affechezFav(  fav_aj)
 
-
-
-
+videcart() 
+export let  creatures  = await get_20_caracter (numberPlus) ;
 Affichez(creatures , grid);
 
+///// charges plus 
+let filter_botton_cliced = 'Tous'
+  Charger_plus.addEventListener('click' , event => {
+    const clicked = event.target.closest('#Charger_plus')
+    if (!clicked) {return}
+     if (filter_botton_cliced == 'Tous'){
+    pluscaracter(grid )}
+    else {
+      plusfeltre20(grid ,filter_botton_cliced )
+      
+    }
+   
+
+    
+  
+
+
+
+  })
+ /////////// Effacer
+  effacer.addEventListener('click' , event =>{
+  const clickedEffacer = event.target.closest('#effacer')
+  if (!clickedEffacer){return}
+     window.location.reload()
+ }
+ )
 
 
 
@@ -37,17 +57,17 @@ Affichez(creatures , grid);
 
 // -------------------------------------------------------------
 // 2. DÉTAIL
-// const cart= document.querySelectorAll('.select');
-// cart.addEventlistener("click"; get_cart ) ;
 
-grid.addEventListener('click', (event) => {
+
+grid.addEventListener('click', async (event) => {
   let clicked = event.target.closest('.select_card')
   if (clicked) {
     const card_select = clicked.querySelector('.find_cart')
     const id_card_select = card_select.innerHTML
     console.log(id_card_select)
-    const index_card_select = creatures.findIndex(element => element.id == id_card_select)
-    Affichez_details(details , index_card_select , creatures , ajout_list)
+    const data_CS =  await  get_caracterById (id_card_select)
+    console.log(data_CS)
+    Affichez_details(details , data_CS , ajout_list)
 
  }}
 )
@@ -77,30 +97,61 @@ details.addEventListener('click', (event) => {
 // La liste se met à jour pendant la saisie d'un nom
 // (sans tenir compte des majuscules).
 let search = document.getElementById('search');
-
-let input = search.addEventListener('input', (event) => {
-  let input_search = event.target.value.toLowerCase();
+  async function serch ( input_search ){
+   if (filter_botton_cliced === "Tous"){
   grid.innerHTML = " "
-  let card_recherche = creatures.filter(arg => arg.name.toLowerCase().includes(input_search))
-
-  card_recherche.forEach(cart => {
-    grid.insertAdjacentHTML('beforeend', `  <article   class="select_card  flex flex-col gap-3 rounded-card bg-white  hover:-translate-y-4 hover:shadow-lg transition-all duration-300  p-3 pb-4">
-          
-          <div class="relative flex h-36 items-center justify-center rounded-xl bg-brand-light">
-          <img src="${cart.image}" width="140px" class="  hover:-translate-y-2 hover:scale-200 mx-auto  transition-transform duration-300  " > 
-
-            <span class="find_cart absolute left-3 top-2 font-mono text-sm text-muted">${cart.id}</span>
-          </div>
-          <div class="flex items-center justify-between gap-2">
-            <h3 class="font-display text-xl font-semibold">${cart.name}</h3>
-            <span class="fend_type rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-ink">${cart.type}</span>
-          </div>
-          <p class="text-sm text-muted">${cart.level} ·${cart.stats.hp + cart.stats.attack + cart.stats.defence} </p>
-          <button id="ajouter" type="button" class="btn-outline">Ajouter à l'équipe</button>
-        </article> ` )
+  videcart ()
+  
+  let liste_recherche = await rocherch( input_search )
+    
+  let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
+    if (card_recherche.length === 0 ){
+    not_fond( input_search )
+    return
+   }
 
 
-  })
+       serchaffichag(card_recherche)}
+       /// serch by type
+       else {
+         grid.innerHTML = " "
+  videcart ()
+  
+  let card_recherche = await rocherchfelter( input_search , filter_botton_cliced  )
+    
+  // let card_recherche = await Promise.all   (liste_recherche.map( cart =>  get_caracter(cart)))
+    if (card_recherche.length === 0 ){
+    not_fond( input_search )
+    return
+   }
+
+
+       serchaffichag(card_recherche)
+   
+   }
+      
+      
+      
+      }
+
+let input = search.addEventListener('input', async (event) => {
+
+  let input_search = event.target.value.toLowerCase();
+
+      await serch(input_search)
+
+  
+
+})
+          grid.addEventListener('click' , async event => {
+          const event_target =event.target.closest('#reessayer')
+          if(!event_target){return}
+           
+           await serch(search.value.toLowerCase() )
+
+         
+
+  
 })
 
 
@@ -109,29 +160,41 @@ let input = search.addEventListener('input', (event) => {
 
 // -------------------------------------------------------------
 
-
+     // 4. FILTRE
 // -------------------------------------------------------------
-// 4. FILTRE
-// Les boutons de type n'affichent que les créatures de ce type ;
-// « Tous » réinitialise le filtre.
-// La recherche et le filtre fonctionnent ENSEMBLE.
+
+
+
 const type = document.querySelector('#filters')
-const click_type = type.addEventListener('click', (event) => {
-  const select_type = event.target.innerHTML.toLowerCase()
+const click_type = type.addEventListener('click', async (event) =>  {
+  const select_type = event.target.innerHTML
   const clickd_button = event.target.closest('button')
   const remove_style_button = type.querySelectorAll('button')
   if (!clickd_button) {
     return;
   }
-    
+     
 
     
   grid.innerHTML = "";
-  if (select_type != 'tous') {
-    let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
-    index_cart_by_type.forEach(cart => {
-     affichez_filter (cart )
-    })
+   videcart(grid) 
+  if (select_type != 'Tous') {
+    search.value=''
+     filter_botton_cliced =  select_type
+     console.log(filter_botton_cliced)
+     suprimernumberPlusfiltre()
+    // let index_cart_by_type = creatures.filter(cart => cart.type.toLowerCase().includes(select_type))
+    let caracterSommeType =  await  getSommeType (select_type)
+    console.log( caracterSommeType )
+    let depart = 0; 
+    let caracter20Filter = await get20ByType (caracterSommeType , depart)
+   
+    console.log(caracter20Filter)
+    grid.innerHTML =''
+     
+     
+      affichez_filter (caracter20Filter  )
+
 
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
@@ -141,7 +204,10 @@ const click_type = type.addEventListener('click', (event) => {
 
 
   } else {
-    Affichez()
+    filter_botton_cliced = 'Tous'
+      search.value=''
+    Affichez(creatures , grid)
+
     remove_style_button.forEach(remov => remov.classList.remove('text-white', 'border-ink', 'bg-ink'))
     clickd_button.classList.add('text-white', 'border-ink', 'bg-ink')
   }
@@ -264,6 +330,44 @@ const listener = get_form.addEventListener('input', (event) => {
 
           
         })
+ ////////////---------------------------------------------
+    
+//                 favoriiit 
+
+//////////// ---------------------------------------------
+
+      grid.addEventListener('click' , async event => {
+        const clickevent = event.target.closest('[data-fav]')
+        if (!clickevent ){
+          return 
+        }
+         const getIdCart = clickevent.dataset.fav
+         console.log (getIdCart)
+         await addFavLS (getIdCart)
+         clickevent.innerHTML= `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#EA3323"><path d="M12,21l-1.45-1.3q-2.53-2.27-4.18-3.92q-1.65-1.65-2.63-2.96Q2.78,11.5 2.39,10.4T2,8.15Q2,5.8 3.58,4.22T7.5,2.65q1.3,0 2.48,0.55T12,4.75q0.85-1 2.03-1.55T16.5,2.65q2.35,0 3.93,1.57T22,8.15q0,1.15-0.39,2.25t-1.36,2.41q-0.97,1.31-2.63,2.96q-1.65,1.65-4.17,3.92L12,21Z"/></svg>`
+         clickevent.removeAttribute('data-fav')
+         clickevent.setAttribute('data-remfav' , `${getIdCart}`)
+         affechezFav(  fav_aj)
+         })
+        grid.addEventListener('click' , async event => {
+        const clickeventremov = event.target.closest('[data-remfav]')
+        if (!clickeventremov){
+          return
+        }
+        const getIdCartRemov =  clickeventremov.dataset.remfav
+          removeFavLS(getIdCartRemov)
+          clickeventremov.innerHTML=` <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" height="24px" width="24px" fill="#EA3323"><path d="M12,21l-1.45-1.3q-2.53-2.27-4.18-3.92q-1.65-1.65-2.63-2.96Q2.78,11.5 2.39,10.4T2,8.15Q2,5.8 3.58,4.22T7.5,2.65q1.3,0 2.48,0.55T12,4.75q0.85-1 2.03-1.55T16.5,2.65q2.35,0 3.93,1.57T22,8.15q0,1.15-0.39,2.25t-1.36,2.41q-0.97,1.31-2.63,2.96q-1.65,1.65-4.17,3.92L12,21Zm0-2.7q2.4-2.15 3.95-3.69t2.45-2.67t1.25-2.03Q20,9.02 20,8.15q0-1.5-1-2.5t-2.5-1q-1.17,0-2.17,0.66q-1,0.66-1.38,1.69h-1.9Q10.68,5.97 9.68,5.31T7.5,4.65q-1.5,0-2.5,1T4,8.15Q4,9.02 4.35,9.91T5.6,11.94t2.45,2.67T12,18.3Zm0-6.83Z"/></svg>`
+          clickeventremov.removeAttribute('data-remfav')
+          clickeventremov.setAttribute('data-fav' , `${getIdCartRemov}`)
+          affechezFav(  fav_aj)
+        })
+
+
+
+
+
+
+
 
 // -------------------------------------------------------------
 
@@ -278,7 +382,7 @@ const listener = get_form.addEventListener('input', (event) => {
        const cart_click = event.target.closest('.select_card')
        const erreur_messag = document.querySelector('#message')
        const get_team_div = document.getElementById('team_aj')
-       const find_id = cart_click.querySelector('.find_cart')
+       const find_id = document.querySelector('.find_cart')
        
 
 
@@ -376,3 +480,4 @@ const retirer_listener = get_team_div_r.addEventListener('click', (event) => {
 // -------------------------------------------------------------
 // BONUS : LocalStorage, Fetch API, tri, comparaison
 // -------------------------------------------------------------
+
